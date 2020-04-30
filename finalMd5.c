@@ -6,6 +6,10 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include <stdbool.h>
+#include <string.h>
+#include <getopt.h>
+#include <stdlib.h>
+
 
 // ( precomputed table):
 //MD5
@@ -272,6 +276,39 @@ int main(int argc, char *argv[]) {
   MD5_CONTEX Md5_contex_VAL;
   FILE *file = NULL;
   union block BL;
+  FILE *pointer;
+  bool keepAlive = true;
+  int i ;
+  int gui;
+  char filename[FNSZ] = {0};
+  char userfiler[50] = "user-entry.txt"; //file that stores users input
+  char string[100];// user input
+
+  // Command Line Arguments
+  // GUI - Title
+  printf("\n- JOSEPH GRIFFITH - G00350112 -\n");
+  printf("\n- MD5 ALGORITHM - HASH GENERATOR -\n");
+  printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#\n\n");
+
+  // GUI - Options
+  printf("PRESS (1) TO BEGIN HASHING A FILE e.g:(file_name_here.txt)\n");
+  printf("PRESS (2) TO BEGIN HASHING A STRING \n");
+  printf("PRESS (4) TO EXIT HASHING\n");
+  printf("Please choose one of the above options: ");
+  scanf("%d", &gui);
 
 
+
+
+
+
+
+
+
+
+
+
+
+  fclose(file);
+  return 0; 
 }
