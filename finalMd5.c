@@ -27,3 +27,11 @@ const uint32_t K[64] = {0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 		      0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
 		      0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
 
+
+/* F, G, H and I are basic MD5 functions.
+ */
+#define F(x, y, z) (((x) & (y)) | ((~x) & (z)))
+#define G(x, y, z) (((x) & (z)) | ((y) & (~z)))
+#define H(x, y, z) ((x) ^ (y) ^ (z))
+#define I(x, y, z) ((y) ^ ((x) | (~z)))
+

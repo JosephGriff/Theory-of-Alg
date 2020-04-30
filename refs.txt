@@ -1,2 +1,3 @@
 https://crypto.stackexchange.com/questions/41827/md5-algorithm-constant
 https://en.wikipedia.org/wiki/MD5#Pseudocode
+https://tools.ietf.org/html/rfc1321
