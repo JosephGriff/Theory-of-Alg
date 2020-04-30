@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
 // ( precomputed table):
 //MD5
@@ -129,6 +130,12 @@ const uint8_t PADONE = 0x80;
 FILE *Md5_hashed(MD5_CONTEX *Md5_contex, union block *BL, char *file) {
     FILE *filepointer;
     uint32_t a, b, c, d; // Stores the prev hash values
+    uint64_t counter = 0; // counts the PADS
+    size_t size;
+    bool keepAlive = true;
+    int i = 0;
+    int padding = 0;
+
     // temporary variable values
     a = Md5_contex -> state[0];
     b = Md5_contex -> state[1];
@@ -145,8 +152,59 @@ FILE *Md5_hashed(MD5_CONTEX *Md5_contex, union block *BL, char *file) {
     if (filepointer == NULL) {
         fprintf(stderr, "ERROR: Sorry but FILE %s does not seem to exist", file);
     }
-}
 
+
+    // Padding cont.
+    while (keepAlive) {
+    size = fread(&BL -> eight, 1, 64, filepointer);
+
+        // if size is = 64 no padding is needed
+        if (size == 64) {
+            counter += 512;
+        // No space at the end of file if the size > 56 and <64
+      } else if (size > 56 && size < 64) {
+            counter += (size * 8);
+            padding = 1;
+
+        BL -> eight_padding[size] = PADONE;
+        for (i = size + 1; i < 64; i++) {
+            BL -> eight_padding[i] = PADZERO;
+        }
+      } else if(size > 0 && size < 56) {
+            counter += (size * 8);
+
+        BL -> eight_padding[size] = PADONE;
+
+        for (i = size + 1; i < 56; i++) {
+            BL -> eight_padding[i] = PADZERO;
+        }
+
+        BL -> sixfour[7] = counter;
+
+        keepAlive = false;
+      } else if (size == 0 && padding == 0) {
+        BL -> eight_padding[0] = PADONE;
+
+        for(i = 1; i < 56; i++) {
+            BL -> eight_padding[i] = PADZERO;
+        }
+
+        BL -> sixfour[7] = counter;
+
+        keepAlive = false;
+      } else if (size == 0 && padding == 1) {
+            BL -> eight_padding[0]=PADZERO;
+
+      for(i = 1; i < 56; i++) {
+            BL -> eight_padding[i] = PADZERO;
+      }
+
+        BL -> sixfour[7] = counter;
+
+        keepAlive = false;
+      }
+}
+}
 int main(int argc, char *argv[]) {
 
 
