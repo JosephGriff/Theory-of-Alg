@@ -92,6 +92,7 @@ Rotation is separate from addition to prevent recomputation.
 #define S43 15
 #define S44 21
 
+#define FNSZ 128
 
 // A sixty-four byte block of memory, accessed with different types.
 typedef union {
@@ -101,16 +102,30 @@ typedef union {
   uint8_t eight_padding[64];
 } BLOCK;
 
+//functions for md5
 typedef struct {
   uint32_t state[4];
-} MD5_CTX;
+} MD5_CONTEX;
+
+// start MD5 - set state values
+void Md5_initialize(MD5_CONTEX *Md5_contex) {
+  Md5_contex -> state[0] = 0x67452301;
+  Md5_contex -> state[1] = 0xefcdab89;
+  Md5_contex -> state[2] = 0x98badcfe;
+  Md5_contex -> state[3] = 0x10325476;
+}
+
+
+//padding
+const uint8_t PADZERO = 0x00;
+const uint8_t PADONE = 0x80;
 
 
 
 int main(int argc, char *argv[]) {
 
 
-  MD5_CTX Md5_ctx_VAL;
+  MD5_CONTEX Md5_contex_VAL;
 
 
 }
