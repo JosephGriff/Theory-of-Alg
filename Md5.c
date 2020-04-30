@@ -192,7 +192,7 @@ int main(int argc, char *argv[]) {
     }
  
     for (int i = 0; i < 8; i++)
-      printf("%02" PRIX32, H[i]);
+      printf("%02" PRIx32, H[i]);
     printf("\n");
 
     fclose(inFile);
