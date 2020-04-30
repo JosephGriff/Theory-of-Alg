@@ -73,29 +73,61 @@ uint32_t sig1(uint32_t x) {
 }
 
 
+
+
+
+
+
+///// padding
+ union block
+    uint64_t sixFour[8]; // 64 * 8 = 512
+    uint32_t threeTwo[16]; // 32 * 16 = 512
+    uint8_t eight[64]; // 8 * 64 = 512
+}; 
+
+uint64_t no_zeros_bytes(uint64_t no_bits) {
+    uint64_t result = 512 - (no_bits % 512ULL);
+
+    if (result < 65) {
+        result += 512;
+    }
+
+    result -= 72;
+
+    return (result / 8ULL);
+}
+
 int main(int argc, char *argv[]) {
+    
+    if (argc != 2) {
+        printf("Error: expected single filename as argument\n");
+        return 1;
+    }
 
-  uint32_t x = 0x0f0f0f0f;
-  uint32_t y = 0xcccccccc;
-  uint32_t z = 0x55555555;
+    FILE *inFile = fopen(argv[1], "rb");
 
-  printf("x          = %08x\n", x);
-  printf("y          = %08x\n", y);
-  printf("z          = %08x\n", z);
+    if (!inFile) {
+        printf("Error: couldn't open file %s. \n", argv[1]);
+        return 1;
+    }
 
-  printf("Ch(x,y,z)  = %08x\n", Ch(x, y, z));
-  printf("Maj(x,y,z) = %08x\n", Maj(x, y, z));
+    uint64_t noBits;
+    union block M;
+    uint8_t i;
 
-  printf("SHR(x,4)   = %08x\n", SHR(x, 4));
-  printf("ROTR(x,4)  = %08x\n", ROTR(x, 4));
+    for (noBits = 0, i = 0; fread(&M.eight[i], 1, 1, inFile) == 1; noBits += 8) {
+        printf("%02" PRIx8, M.eight[i]);
+    }
 
-  printf("Sig0(x)    = %08x\n", Sig0(x));
-  printf("Sig1(x)    = %08x\n", Sig1(x));
-  printf("sig0(x)    = %08x\n", sig0(x));
-  printf("sig1(x)    = %08x\n", sig1(x));
+    printf("%02" PRIx8, 0x80); // Bits: 1000 000
+    
+    for (uint64_t i = (no_zeros_bytes(noBits)); i > 0; i--) {
+        printf("%02" PRIx8, 0x00);
+    }
 
-  printf("K[20]      = %08x\n", K[20]);
-  printf("H[2]       = %08x\n", H[2]);
+    printf("%016" PRIx64 "\n", noBits);
 
-  return 0;
+
+    fclose(inFile);
+    return 0;
 }
