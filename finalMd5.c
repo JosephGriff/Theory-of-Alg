@@ -66,3 +66,29 @@ Rotation is separate from addition to prevent recomputation.
  (a) += (b); \
   }
 
+
+//MD5 Hash Constansts
+//round 1
+#define S11 7 
+#define S12 12
+#define S13 17
+#define S14 22
+
+//round 2
+#define S21 5
+#define S22 9 
+#define S23 14
+#define S24 20
+
+//round 3
+#define S31 4
+#define S32 11
+#define S33 16 
+#define S34 23
+
+//round 4
+#define S41 6
+#define S42 10
+#define S43 15
+#define S44 21
+
