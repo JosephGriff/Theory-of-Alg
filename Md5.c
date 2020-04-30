@@ -25,13 +25,6 @@ const uint32_t K[] = {
   0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-// Section 5.3.3
-uint32_t H[] = {
-  0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
-  0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19  
-};
-
-
 uint32_t Ch(uint32_t x, uint32_t y, uint32_t z) {
   // Section 4.1.2
   return (x & y) ^ (~x & z);
@@ -97,6 +90,24 @@ uint64_t no_zeros_bytes(uint64_t no_bits) {
     return (result / 8ULL);
 }
 
+int nextblock(union block *M, FILE *infile) {
+
+    uint64_t noBits;
+    uint8_t i;    
+	
+    for (noBits = 0, i = 0; fread(&M.eight[i], 1, 1, inFile) == 1; noBits += 8) {
+        printf("%02" PRIx8, M.eight[i]);
+    }
+
+    printf("%02" PRIx8, 0x80); // Bits: 1000 0000
+
+    for (uint64_t i = (no_zeros_bytes(noBits)); i > 0; i--) {
+        printf("%02" PRIx8, 0x00);
+    }
+
+    printf("%016" PRIx64 "\n", noBits);
+
+
 int main(int argc, char *argv[]) {
     
     if (argc != 2) {
@@ -111,22 +122,24 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    uint64_t noBits;
-    union block M;
-    uint8_t i;
 
-    for (noBits = 0, i = 0; fread(&M.eight[i], 1, 1, inFile) == 1; noBits += 8) {
-        printf("%02" PRIx8, M.eight[i]);
+    // Section 5.3.3
+    uint32_t H[] = {
+      0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+      0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
+    };
+
+    //the current padded message block
+    union bock M;
+
+    while (nextblock(&M, infile)) {
+      // Calculate the next hash value.
+      H =  nexthash(M, H);
     }
-
-    printf("%02" PRIx8, 0x80); // Bits: 1000 000
-    
-    for (uint64_t i = (no_zeros_bytes(noBits)); i > 0; i--) {
-        printf("%02" PRIx8, 0x00);
-    }
-
-    printf("%016" PRIx64 "\n", noBits);
-
+ 
+    for (int i = 0; i < 8; i++)
+      printf("%02" PRIX32, H[i]);
+    printf("\n");
 
     fclose(inFile);
     return 0;
