@@ -9,7 +9,7 @@
 #include <string.h>
 #include <getopt.h>
 #include <stdlib.h>
-
+#include <assert.h>
 
 // ( precomputed table):
 //MD5
@@ -282,6 +282,19 @@ FILE *Md5_hashed(MD5_CONTEX *Md5_contex, union block *BL, char *file) {
 }
 }
 
+// -h = help - command line argument
+void print_help(){
+	printf ("User has asked for help (-h)\n");
+	printf ("To build the application enter: make finalMd5\n");
+	printf ("To run the application enter: ./finalMd5\n");
+	printf ("To HASH a file with MD5 press (1) in the gui then enter desired file name\n");
+	printf ("To HASH a STRING with MD5 input press  (2) in the guiu then enter desired string\n");
+	printf ("To close the MD5 algorithm please press(4) in the gui\n");
+	exit(1);
+}
+
+
+
 
 
 
@@ -298,6 +311,7 @@ int main(int argc, char *argv[]) {
   char filename[FNSZ] = {0};
   char userfile[50] = "user-entry.txt"; //file that stores users input
   char string[100];// user input
+
 
   // Command Line Arguments
   // GUI - Title
@@ -396,7 +410,15 @@ int main(int argc, char *argv[]) {
 
 
 
+  // assert.h
+  file = fopen("test.txt", "r");
+  file = fopen("empty.txt", "r");
+  file = fopen("write.txt", "r");
+  file = fopen("user-entry.txt", "r");
+  assert(file != NULL);
 
+  pointer = fopen(userfile, "w");
+  assert(userfile != NULL);
 
 
 
