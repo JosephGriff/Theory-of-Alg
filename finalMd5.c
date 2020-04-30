@@ -43,29 +43,12 @@ const uint32_t K[64] = {0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 /* FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4.
 Rotation is separate from addition to prevent recomputation.
  */
-#define FF(a, b, c, d, x, s, ac) { \
- (a) += F ((b), (c), (d)) + (x) + (UINT4)(ac); \
- (a) = ROTATE_LEFT ((a), (s)); \
- (a) += (b); \
-  }
 
-#define GG(a, b, c, d, x, s, ac) { \
- (a) += G ((b), (c), (d)) + (x) + (UINT4)(ac); \
- (a) = ROTATE_LEFT ((a), (s)); \
- (a) += (b); \
-  }
 
-#define HH(a, b, c, d, x, s, ac) { \
- (a) += H ((b), (c), (d)) + (x) + (UINT4)(ac); \
- (a) = ROTATE_LEFT ((a), (s)); \
- (a) += (b); \
-  }
-
-#define II(a, b, c, d, x, s, ac) { \
- (a) += I ((b), (c), (d)) + (x) + (UINT4)(ac); \
- (a) = ROTATE_LEFT ((a), (s)); \
- (a) += (b); \
-  }
+#define FF(a, b, c, d, m, s, t) { a += F(b, c, d) + m + t;  a = b + ROTATE_LEFT(a, s); }
+#define GG(a, b, c, d, m, s, t) { a += G(b, c, d) + m + t;  a = b + ROTATE_LEFT(a, s); }
+#define HH(a, b, c, d, m, s, t) { a += H(b, c, d) + m + t;  a = b + ROTATE_LEFT(a, s); }
+#define II(a, b, c, d, m, s, t) { a += I(b, c, d) + m + t;  a = b + ROTATE_LEFT(a, s); }
 
 
 //MD5 Hash Constansts
@@ -203,8 +186,86 @@ FILE *Md5_hashed(MD5_CONTEX *Md5_contex, union block *BL, char *file) {
 
         keepAlive = false;
       }
+      
+
+      // start of imp of rounds
+    // Round 1 - FF
+    FF(a, b, c, d, BL -> threetwo[0], S11, K[0]);
+    FF(d, a, b, c, BL -> threetwo[1], S12, K[1]);
+    FF(c, d, a, b, BL -> threetwo[2], S13, K[2]);
+    FF(b, c, d, a, BL -> threetwo[3], S14, K[3]);
+    FF(a, b, c, d, BL -> threetwo[4], S11, K[4]);
+    FF(d, a, b, c, BL -> threetwo[5], S12, K[5]);
+    FF(c, d, a, b, BL -> threetwo[6], S13, K[6]);
+    FF(b, c, d, a, BL -> threetwo[7], S14, K[7]);
+    FF(a, b, c, d, BL -> threetwo[8], S11, K[8]);
+    FF(d, a, b, c, BL -> threetwo[9], S12, K[9]);
+    FF(c, d, a, b, BL -> threetwo[10], S13, K[10]);
+    FF(b, c, d, a, BL -> threetwo[11], S14, K[11]);
+    FF(a, b, c, d, BL-> threetwo[12], S11, K[12]);
+    FF(d, a, b, c, BL -> threetwo[13], S12, K[13]);
+    FF(c, d, a, b, BL -> threetwo[14], S13, K[14]);
+    FF(b, c, d, a, BL-> threetwo[15], S14, K[15]);
+
+    // Round 2 - GG
+    GG(a, b, c, d, BL -> threetwo[1], S21, K[16]);
+    GG(d, a, b, c, BL -> threetwo[6], S22, K[17]);
+    GG(c, d, a, b, BL -> threetwo[11], S23, K[18]);
+    GG(b, c, d, a, BL -> threetwo[0], S24, K[19]);
+    GG(a, b, c, d, BL -> threetwo[5], S21, K[20]);
+    GG(d, a, b, c, BL -> threetwo[10], S22, K[21]);
+    GG(c, d, a, b, BL -> threetwo[15], S23, K[22]);
+    GG(b, c, d, a, BL -> threetwo[4], S24, K[23]);
+    GG(a, b, c, d, BL -> threetwo[9], S21, K[24]);
+    GG(d, a, b, c, BL -> threetwo[14], S22, K[25]);
+    GG(c, d, a, b, BL -> threetwo[3], S23, K[26]);
+    GG(b, c, d, a, BL -> threetwo[8], S24, K[27]);
+    GG(a, b, c, d, BL -> threetwo[13], S21, K[28]);
+    GG(d, a, b, c, BL -> threetwo[2], S22, K[29]);
+    GG(c, d, a, b, BL -> threetwo[7], S23, K[30]);
+    GG(b, c, d, a, BL -> threetwo[12], S24, K[31]);
+
+    // Round 3 - HH
+    HH(a, b, c, d, BL -> threetwo[5], S31, K[32]);
+    HH(d, a, b, c, BL-> threetwo[8], S32, K[33]);
+    HH(c, d, a, b, BL -> threetwo[11], S33, K[34]);
+    HH(b, c, d, a, BL -> threetwo[14], S34, K[35]);
+    HH(a, b, c, d, BL -> threetwo[1], S31, K[36]);
+    HH(d, a, b, c, BL -> threetwo[4], S32, K[37]);
+    HH(c, d, a, b, BL -> threetwo[7], S33, K[38]);
+    HH(b, c, d, a, BL -> threetwo[10], S34, K[39]);
+    HH(a, b, c, d, BL -> threetwo[13], S31, K[40]);
+    HH(d, a, b, c, BL -> threetwo[0], S32, K[41]);
+    HH(c, d, a, b, BL -> threetwo[3], S33, K[42]);
+    HH(b, c, d, a, BL -> threetwo[6], S34, K[43]);
+    HH(a, b, c, d, BL -> threetwo[9], S31, K[44]);
+    HH(d, a, b, c, BL -> threetwo[12], S32, K[45]);
+    HH(c, d, a, b, BL -> threetwo[15], S33, K[46]);
+    HH(b, c, d, a, BL -> threetwo[2], S34, K[47]);
+
+    // Round 4 - II
+    II(a, b, c, d, BL -> threetwo[0], S41, K[48]);
+    II(d, a, b, c, BL -> threetwo[7], S42, K[49]);
+    II(c, d, a, b, BL -> threetwo[14], S43, K[50]);
+    II(b, c, d, a, BL -> threetwo[5], S44, K[51]);
+    II(a, b, c, d, BL -> threetwo[12], S41, K[52]);
+    II(d, a, b, c, BL -> threetwo[3], S42, K[53]);
+    II(c, d, a, b, BL -> threetwo[10], S43, K[54]);
+    II(b, c, d, a, BL -> threetwo[1], S44, K[55]);
+    II(a, b, c, d, BL -> threetwo[8], S41, K[56]);
+    II(d, a, b, c, BL -> threetwo[15], S42, K[57]);
+    II(c, d, a, b, BL -> threetwo[6], S43, K[58]);
+    II(b, c, d, a, BL -> threetwo[13], S44, K[59]);
+    II(a, b, c, d, BL -> threetwo[4], S41, K[60]);
+    II(d, a, b, c, BL -> threetwo[11], S42, K[61]);
+    II(c, d, a, b, BL -> threetwo[2], S43, K[62]);
+    II(b, c, d, a, BL -> threetwo[9], S44, K[63]);
 }
 }
+
+
+
+
 int main(int argc, char *argv[]) {
 
 
