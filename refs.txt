@@ -2,3 +2,9 @@ https://crypto.stackexchange.com/questions/41827/md5-algorithm-constant
 https://en.wikipedia.org/wiki/MD5#Pseudocode
 https://tools.ietf.org/html/rfc1321
 https://dev.w3.org/libwww/modules/md5/md5.c
+https://learnonline.gmit.ie/course/view.php?id=557
+// sha videos
+https://www.educba.com/md5-alogrithm
+https://www.youtube.com/watch?v=53O9J2J5i14
+https://www.youtube.com/watch?v=SjyR74lbZOc
+http://sampleicc.sourceforge.net/IccProfLib/Docs/html/md5_8cpp.html 
