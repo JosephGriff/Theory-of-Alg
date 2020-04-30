@@ -95,17 +95,22 @@ Rotation is separate from addition to prevent recomputation.
 #define FNSZ 128
 
 // A sixty-four byte block of memory, accessed with different types.
-typedef union {
+ union block {
   uint64_t sixfour[8];
   uint32_t threetwo[16];
   uint8_t eight[64];
   uint8_t eight_padding[64];
-} BLOCK;
+};
 
 //functions for md5
 typedef struct {
   uint32_t state[4];
 } MD5_CONTEX;
+
+// md5 initialization / begins the md5 op writing up a new context
+void Md5_initialize(MD5_CONTEX *Md5_contex);
+FILE *Md5_hash(MD5_CONTEX *Md5_contex, union block *BL, char *file);
+
 
 // start MD5 - set state values
 void Md5_initialize(MD5_CONTEX *Md5_contex) {
@@ -126,6 +131,8 @@ int main(int argc, char *argv[]) {
 
 
   MD5_CONTEX Md5_contex_VAL;
+  FILE *file = NULL;
+  union block BL;
 
 
 }
