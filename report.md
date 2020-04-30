@@ -26,3 +26,10 @@ Part of the task given to us for this project was to used the Google Cloud Platf
 - once you have coded up some of the project and want to test your work you must press "esc, : , wq , enter" to go back to the command line.
 - once their type make "filename"(finalMd5) this will check for errors and compile your code.
 - finally type ./"filename"(finalMd5) to run your work.
+
+# Tests / Cmd Line Arguments
+- As part of the extended work for the project due to the COVID-19 virus pandemic we were tasked with adding tests and command line arguments. -h a help command line argument is what I implemented.
+
+- the --help is implemented using getopt to allow the command line arguments to be part of the program #include<getopt.h>. 
+- to use the -help cmd line argument the user must type in ./finalMd5 -h into the command line.
+- Once entered the gui interface will give a prompt to the user on what they must enter to successfully run the project.
