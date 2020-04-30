@@ -3,7 +3,7 @@
 //
 
 #include <stdio.h>
-#include <stdint.h>
+#include <inttypes.h>
 
 // Section 4.2.2
 const uint32_t K[] = {
@@ -72,13 +72,13 @@ uint32_t sig1(uint32_t x) {
 
 
 ///// padding
- union block
-    uint64_t sixFour[8]; // 64 * 8 = 512
-    uint32_t threeTwo[16]; // 32 * 16 = 512
-    uint8_t eight[64]; // 8 * 64 = 512
-}; 
+union block {
+  uint64_t sixfour[8];
+  uint32_t threetwo[16];
+  uint8_t eight[64];
+};
 
-enum flag {READ, PAD0, PAD1, FINISH};
+enum flag {READ, PAD0, FINISH};
 
 uint64_t no_zeros_bytes(uint64_t no_bits) {
 
@@ -95,19 +95,43 @@ uint64_t no_zeros_bytes(uint64_t no_bits) {
 
 int nextblock(union block *M, FILE *infile, uint64_t *nobits, enum flag *status ) {
 
-    uint8_t i;    
 	
-    for (*noBits = 0, i = 0; fread(&M.eight[i], 1, 1, inFile) == 1; *noBits += 8) {
-        printf("%02" PRIx8, M.eight[i]);
+    if (*status == FINISH)
+    return 0;
+
+    if (*status == PAD0) {
+      for (int i = 0; i < 56; i++)
+        M->eight[i] = 0;
+      M->sixfour[7] = *nobits;
+      *status = FINISH;
+      return 1;
     }
 
-    printf("%02" PRIx8, 0x80); // Bits: 1000 0000
+    size_t nobytesread = fread(M->eight, 1, 64, infile);
+    if (nobytesread == 64)
+    return 1;
 
-    for (uint64_t i = (no_zeros_bytes(*noBits)); i > 0; i--) {
-        printf("%02" PRIx8, 0x00);
+
+    // If we can fit all padding in last block:
+    if (nobytesread < 56) {
+      M->eight[nobytesread] = 0x80;
+      for (int i = nobytesread + 1; i < 56; i++)
+        M->eight[i] = 0;
+      M->sixfour[7] = *nobits;
+      *status = FINISH;
+      return 1;
     }
 
-    printf("%016" PRIx64 "\n", *noBits);
+    
+     // Otherwise we have read between 56 (incl) and 64 (excl) bytes.
+      M->eight[nobytesread] = 0x80;
+      for (int i = nobytesread + 1; i < 64; i++)
+        M->eight[i] = 0;
+      *status = PAD0;
+      return 1;
+
+  }
+
 
 void nexthash(union block *M, uint32_t *H){
 
@@ -158,13 +182,13 @@ int main(int argc, char *argv[]) {
     };
 
     //the current padded message block
-    union bock M;
+    union block M;
     uint64_t nobits = 0;
     enum flag status = READ;
 
-    while (nextblock(&M, infile, nobits, status)) {
+    while (nextblock(&M, inFile, &nobits, &status)) {
       // Calculate the next hash value.
-      H =  nexthash(&M,&H);
+       nexthash(&M,H);
     }
  
     for (int i = 0; i < 8; i++)
