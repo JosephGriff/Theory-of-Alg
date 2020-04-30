@@ -7,4 +7,6 @@ https://learnonline.gmit.ie/course/view.php?id=557
 https://www.educba.com/md5-alogrithm
 https://www.youtube.com/watch?v=53O9J2J5i14
 https://www.youtube.com/watch?v=SjyR74lbZOc
-http://sampleicc.sourceforge.net/IccProfLib/Docs/html/md5_8cpp.html 
+http://sampleicc.sourceforge.net/IccProfLib/Docs/html/md5_8cpp.html
+https://www.computerhope.com/jargon/s/stderr.htm
+ 

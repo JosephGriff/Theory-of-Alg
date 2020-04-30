@@ -125,7 +125,27 @@ void Md5_initialize(MD5_CONTEX *Md5_contex) {
 const uint8_t PADZERO = 0x00;
 const uint8_t PADONE = 0x80;
 
+// Message Digit - File Pointer
+FILE *Md5_hashed(MD5_CONTEX *Md5_contex, union block *BL, char *file) {
+    FILE *filepointer;
+    uint32_t a, b, c, d; // Stores the prev hash values
+    // temporary variable values
+    a = Md5_contex -> state[0];
+    b = Md5_contex -> state[1];
+    c = Md5_contex -> state[2];
+    d = Md5_contex -> state[3];
 
+    // the file pointer opens the file
+    filepointer = fopen(file, "r");
+
+    printf("\nFILE: %s\n", file);
+    printf("OUTPUT HASHED STRING: ");
+
+    // checks if files exist
+    if (filepointer == NULL) {
+        fprintf(stderr, "ERROR: Sorry but FILE %s does not seem to exist", file);
+    }
+}
 
 int main(int argc, char *argv[]) {
 
