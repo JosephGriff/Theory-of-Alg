@@ -264,6 +264,21 @@ FILE *Md5_hashed(MD5_CONTEX *Md5_contex, union block *BL, char *file) {
     II(d, a, b, c, BL -> threetwo[11], S42, K[61]);
     II(c, d, a, b, BL -> threetwo[2], S43, K[62]);
     II(b, c, d, a, BL -> threetwo[9], S44, K[63]);
+
+
+    // Declares the updated values omce rounds finish
+    Md5_contex -> state[0] += a;
+    Md5_contex -> state[1] += b;
+    Md5_contex -> state[2] += c;
+    Md5_contex -> state[3] += d;
+
+    // Last updates
+    for(int i = 0, j = 0; i < 4; i++, j += 4) {
+      BL -> threetwo[j] = (BL -> eight[i] & 0xFF);
+      BL -> threetwo[j + 1] = ((BL -> eight[i]) >> 8 & 0xFF);
+      BL -> threetwo[j + 2] = ((BL -> eight[i]) >> 16 & 0xFF);
+      BL -> threetwo[j + 3] = ((BL -> eight[i]) >> 24 & 0xFF);
+    }
 }
 }
 
@@ -281,7 +296,7 @@ int main(int argc, char *argv[]) {
   int i ;
   int gui;
   char filename[FNSZ] = {0};
-  char userfiler[50] = "user-entry.txt"; //file that stores users input
+  char userfile[50] = "user-entry.txt"; //file that stores users input
   char string[100];// user input
 
   // Command Line Arguments
@@ -298,7 +313,85 @@ int main(int argc, char *argv[]) {
   scanf("%d", &gui);
 
 
+  while (keepAlive = true) {
+    switch (gui) {
+      case 1:
+        printf("Please Enter a File name: ");
+        
+        if (scanf ("%127s%*c", filename) != 1) {
+          fprintf (stderr, "ERROR: FILE entry failed.\n");
+          return 1;
+        }
+        
+        // MD5 - Hashing of the File
+        Md5_initialize(&Md5_contex_VAL);
+        file = Md5_hashed(&Md5_contex_VAL, &BL, filename);
 
+        if (!file) {
+          fprintf (stderr, "ERROR: FILE failed to open. '%s'\n", filename);
+          return 1;
+        }
+
+        // results of MD5
+        for(i = 0; i < 4; i++) {
+          printf("%02x", (Md5_contex_VAL.state[i] >> 0 ) & 0x000000ff);
+          printf("%02x", (Md5_contex_VAL.state[i] >> 8) & 0x000000ff);
+          printf("%02x", (Md5_contex_VAL.state[i] >> 16) & 0x000000ff); 
+          printf("%02x", (Md5_contex_VAL.state[i] >> 24) & 0x000000ff);
+        }
+        break;
+
+      case 2:
+	// opens the file to store the entry from the user
+        pointer = fopen(userfile, "w");
+        // File Non-Existent
+        if(pointer == NULL) {
+          printf("ERROR: FILE cannot be found or does not exist");   
+          exit(1);             
+        }
+
+        // Users Input
+        printf("Please Enter a String: ");
+        scanf("%s", &string);
+
+        // Users Input -> File
+        fprintf(pointer, "%s", string);
+        fclose(pointer);
+        
+        // MD5 - Hash of the File
+        Md5_initialize(&Md5_contex_VAL);
+        file = Md5_hashed(&Md5_contex_VAL, &BL, userfile);
+
+        if (!file) {
+          fprintf (stderr, "ERROR: FILE failed to open. '%s'\n", userfile);
+          return 1;
+        }
+
+        // results of MD5
+        for(i = 0; i < 4; i++) {
+          printf("%02x", (Md5_contex_VAL.state[i] >> 0 ) & 0x000000ff);
+          printf("%02x", (Md5_contex_VAL.state[i] >> 8) & 0x000000ff);
+          printf("%02x", (Md5_contex_VAL.state[i] >> 16) & 0x000000ff); 
+          printf("%02x", (Md5_contex_VAL.state[i] >> 24) & 0x000000ff);
+        }
+        break;
+
+      case 4:
+          // Exit MD5
+	  printf("ending MD5 algorithm...\n");
+          exit(1);
+
+          break;
+        default:
+          break;
+    }
+
+  printf("\n\nPRESS (1) TO BEGIN HASHING A FILE e.g:(file_name_here.txt),\n"); 
+  printf("PRESS (2) TO BEGIN HASHING A STRING \n");
+  printf("PRESS (4) TO EXIT HASHING\n");
+  printf("Please choose one of the options above: ");   
+  scanf("%d", &gui);
+  }
 
 
 
