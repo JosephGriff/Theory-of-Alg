@@ -9,4 +9,6 @@ https://www.youtube.com/watch?v=53O9J2J5i14
 https://www.youtube.com/watch?v=SjyR74lbZOc
 http://sampleicc.sourceforge.net/IccProfLib/Docs/html/md5_8cpp.html
 https://www.computerhope.com/jargon/s/stderr.htm
- 
+https://en.wikipedia.org/wiki/Secure_Hash_Algorithms
+https://csrc.nist.gov/Projects/Hash-Functions/NIST-Policy-on-Hash-Functions
+https://www.computerhope.com/unix/md5sum.htm
